@@ -49,6 +49,12 @@ medium_day_probability = 3
 bad_day_probability = 1
 total_day_probability = good_day_probability + medium_day_probability + bad_day_probability # Helper variable for calculating %
 
+# Tic type probabilities
+vocal_probability = 20
+physical_probability = 15
+faint_probability = 1
+total_tic_probability = vocal_probability + physical_probability + faint_probability # Helper variable for calculating %
+
 # Pick a day quality (good, medium, bad) and set probabilities
 if day_choice == "1":
     day_type = 1
@@ -76,12 +82,6 @@ elif day_type == 2:
 elif day_type == 3:
     min_time = 1800 # 1800 seconds = 30 minutes
     max_time = 3000 # 3000 seconds = 50 minutes
-
-# Probabilities for the tic types
-vocal_probability = 20
-physical_probability = 15
-faint_probability = 1
-total_tic_probability = vocal_probability + physical_probability + faint_probability # Helper variable for calculating %
 
 # Minimum and maximum burst amount per day type
 if day_type == 1:
