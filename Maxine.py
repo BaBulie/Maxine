@@ -1,16 +1,14 @@
 import itertools    # Spinner
-import ctypes       # Taskbar flash
 import cursor       # Show/hide cursor
-import random       # Randomizer
 import time         # Timer
-import sys          # Spinner, progress bar
-import os           # Clear screen
-os.system("")       # Somehow makes termcolor work outside the main loop
+import sys          # Used in spinner & progress bar
+import os           # Allows clear screen among others
 
-from termcolor import colored, cprint   # Color console outputs
-from playsound import playsound         # Plays sounds (make sure to use v1.2.2 or else it will crash)
+from termcolor import colored, cprint   # Colored console outputs
+from preferredsoundplayer import *      # Plays sounds
+import random                           # Randomizer, must be imported after preferredsoundplayer
 
-cursor.hide()
+cursor.hide() # Hide the cursor
 
 # Import and clean up tic list files, and add into list variables
 file_mini = open('mini_tics.txt', 'r')
@@ -31,7 +29,7 @@ physical_tics = []
 for line in f_physical:
     physical_tics.append(line.strip())
 
-# Import sound files
+# Assign sound files
 announce = "announce.wav"
 mini = "tic.wav"
 
@@ -135,7 +133,7 @@ while True:
         mini_left -= 1                                              # Reduce the mini tic wait time by 1
         if mini_left < 1:                                           # Check if time for a mini tic
             mini_left = wait_time / ((random.random() * 2) + 1.2)   # Reset the mini tic wait time
-            playsound(mini)                                         # Play a sound
+            soundplay(mini)                                         # Play a sound
             os.system('cls')                                        # Clear the screen
 
             # Display the list of mini tics
@@ -148,9 +146,7 @@ while True:
 
     # Get the user's attention
     os.system('cls')    # Clear the screen
-    ctypes.windll.user32.FlashWindow(ctypes.windll.kernel32.GetConsoleWindow(), True)   # Flash the icon in windows taskbar
-    cprint("                    TIC INCOMING!                    ", "black", "on_red")
-    playsound(announce) # Play a sound
+    soundplay(announce) # Play a sound
 
     while time_left > 0:
         cprint("                    TIC INCOMING!                    ", "black", "on_red")
