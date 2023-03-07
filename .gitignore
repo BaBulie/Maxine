@@ -1,3 +1,5 @@
 # TEXT FILES #
 # Ignore the lists containing Maxine's tics in order to avoid roleplay spoilers/metagaming
 *.txt
+
+__pycache__
