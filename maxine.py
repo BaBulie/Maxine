@@ -9,14 +9,47 @@ import random
 
 cursor.hide()
 
-# Import tic lists
-file_mini = open('mini_tics.txt', 'r')
-file_vocal = open('vocal_tics.txt', 'r')
-file_physical = open('physical_tics.txt', 'r')
+if os.path.isfile('announce.wav') and os.path.isfile('tic.wav'):
+    announce = "announce.wav"
+    mini = "tic.wav"
+else:
+    input('> Sound file(s) not found!')
 
-f_mini = file_mini.readlines()
-f_vocal = file_vocal.readlines()
-f_physical = file_physical.readlines()
+try:
+    file_mini = open('mini_tics.txt', 'r')
+    f_mini = file_mini.readlines()
+except FileNotFoundError as e:
+    print(f'{e}')
+    with open('mini_tics.txt', 'a+') as file_mini:
+        file_mini.write("Mini tic")
+        time.sleep(1)
+        print('> File created with placeholder tic.\n')
+        f_mini = file_mini.readlines()
+        time.sleep(1)
+
+try:
+    file_vocal = open('vocal_tics.txt', 'r')
+    f_vocal = file_vocal.readlines()
+except FileNotFoundError as e:
+    print(f'{e}')
+    with open('vocal_tics.txt', 'a+') as file_vocal:
+        file_vocal.write("Vocal tic")
+        time.sleep(1)
+        print('> File created with placeholder tic.\n')
+        f_vocal = file_vocal.readlines()
+        time.sleep(1)
+
+try:
+    file_physical = open('physical_tics.txt', 'r')
+    f_physical = file_physical.readlines()
+except FileNotFoundError as e:
+    print(f'{e}')
+    with open('physical_tics.txt', 'a+') as file_physical:
+        file_physical.write("Physical tic")
+        time.sleep(1)
+        print('> File created with placeholder tic.\n')
+        f_physical = file_physical.readlines()
+        time.sleep(1)
 
 mini_tics = []
 for line in f_mini:
@@ -27,10 +60,6 @@ for line in f_vocal:
 physical_tics = []
 for line in f_physical:
     physical_tics.append(line.strip())
-
-# Assign sound files
-announce = "announce.wav"
-mini = "tic.wav"
 
 # Let the user pick day quality
 print("Please choose day quality.")
