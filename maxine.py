@@ -14,6 +14,7 @@ if os.path.isfile('announce.wav') and os.path.isfile('tic.wav'):
     mini = "tic.wav"
 else:
     input('> Sound file(s) not found!')
+    os.exit()
 
 try:
     file_mini = open('mini_tics.txt', 'r')
