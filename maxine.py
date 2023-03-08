@@ -1,16 +1,15 @@
-import itertools    # Spinner
-import cursor       # Show/hide cursor
-import time         # Timer
-import sys          # Used in spinner & progress bar
-import os           # Allows clear screen among others
+import itertools
+import cursor
+import time
+import sys
+import os
+from termcolor import colored, cprint
+from preferredsoundplayer import *
+import random
 
-from termcolor import colored, cprint   # Colored console outputs
-from preferredsoundplayer import *      # Plays sounds
-import random                           # Randomizer, must be imported after preferredsoundplayer
+cursor.hide()
 
-cursor.hide() # Hide the cursor
-
-# Import and clean up tic list files, and add into list variables
+# Import tic lists
 file_mini = open('mini_tics.txt', 'r')
 file_vocal = open('vocal_tics.txt', 'r')
 file_physical = open('physical_tics.txt', 'r')
@@ -35,12 +34,9 @@ mini = "tic.wav"
 
 # Let the user pick day quality
 print("Please choose day quality.")
-print(colored("Good:", 'green'), "1 | ", colored("Medium:", 'yellow'),
-      "2 | ", colored("Bad:", 'red'),
-      "3 | ", colored("Weigthed random:", 'magenta'), "4")
+print(colored("Good:", 'green'), "1 | ", colored("Medium:", 'yellow'), "2 | ", colored("Bad:", 'red'), "3 | ", colored("Weigthed random:", 'magenta'), "4")
 day_choice = input("Choice: ")
 
-# VARIABLE SETTINGS
 # Day probabilites
 good_day_probability = 5
 medium_day_probability = 3
@@ -64,22 +60,22 @@ elif day_choice == "3":
     day_type = 3
     day_text = colored("Waiting for tic(s)...", "red", attrs=['underline'])
 else:
-    day_type = random.choices(
-        population=[1, 2, 3],
-        weights=[good_day_probability, medium_day_probability, bad_day_probability],  # Set day type probabilities
-        k=1)[0]
+    day_type = random.choices(population=[1, 2, 3], weights=[good_day_probability, medium_day_probability, bad_day_probability], k=1)[0]
     day_text = colored("Waiting for tic(s)...", "magenta", attrs=['underline'])
 
 # Set wait times based on the day quality
 if day_type == 1:
-    min_time = 4200 # 4200 seconds = 1 hour 10 minutes
-    max_time = 5400 # 5400 seconds = 1 hour 30 minutes
+    min_time = 4200 # 1 hour 10 minutes
+    max_time = 5400 # 1 hour 30 minutes
 elif day_type == 2:
-    min_time = 3000 # 3000 seconds = 50 minutes
-    max_time = 4200 # 4200 seconds = 1 hour 10 minutes
+    min_time = 3000 # 50 minutes
+    max_time = 4200 # 1 hour 10 minutes
 elif day_type == 3:
-    min_time = 1800 # 1800 seconds = 30 minutes
-    max_time = 3000 # 3000 seconds = 50 minutes
+    min_time = 1800 # 30 minutes
+    max_time = 3000 # 50 minutes
+
+min_mini = min_time / 2
+max_mini = max_time / 2
 
 # Minimum and maximum burst amount per day type
 if day_type == 1:
@@ -98,10 +94,8 @@ max_burst_time = 18
 
 # MAIN LOOP
 while True:
-    current_tic = 0     # Helper variable for burst
-    os.system('cls')    # Clear the screen
+    os.system('cls')
 
-    # List the probabilites
     if day_choice == "4":
         cprint("Day probabilites", attrs=['underline'])
         print("Good day:", round((good_day_probability/total_day_probability)*100, 1), "%")
@@ -113,56 +107,49 @@ while True:
     print("Physical:", round((physical_probability/total_tic_probability)*100, 1), "%")
     print("Faint:", round((faint_probability/total_tic_probability)*100, 1), "%\n")
     
-    print(day_text)     # Print what kind of day has been picked
+    print(day_text)
     
-    # Wait for a random amount of time between the specified minimum and maximum values
-    wait_time = random.randint(min_time, max_time)              # Set the wait time to a random value between min and max
-    time_left = wait_time                                       # Helper variable for the spinner while the wait time is active
-    mini_left = wait_time / ((random.random() * 2) + 1.2)       # Set up the mini tic function frequency
-    spinner = itertools.cycle(['[M     ]', '[ A    ]',          # Spinner shows that the program is running down the wait time
-                               '[  X   ]', '[   I  ]',
-                               '[    N ]', '[     E]'])   
-    while time_left > 29:                                       # While loop that turns the spinner and runs down the wait time, until it hits 0
-        sys.stdout.write(next(spinner))                         # Write the next character in the spinner
-        sys.stdout.flush()                                      # Flush stdout buffer (actual character display)
-        sys.stdout.write('\r')                                  # Erase the last written character
-        time.sleep(1)                                           # Wait one second
-        time_left -= 1                                          # Reduce the wait time by 1
+    time_left = random.randint(min_time, max_time)
+    mini_left = random.randint(min_mini, max_mini)
+    spinner = itertools.cycle(['[M     ]', '[ A    ]', '[  X   ]', '[   I  ]', '[    N ]', '[     E]'])
+    while time_left > 29:
+        sys.stdout.write(next(spinner))
+        sys.stdout.flush()
+        sys.stdout.write('\r')
+        time.sleep(1)
+        time_left -= 1
 
         # Mini tics
-        mini_left -= 1                                              # Reduce the mini tic wait time by 1
-        if mini_left < 1:                                           # Check if time for a mini tic
-            mini_left = wait_time / ((random.random() * 2) + 1.2)   # Reset the mini tic wait time
-            soundplay(mini)                                         # Play a sound
-            os.system('cls')                                        # Clear the screen
+        mini_left -= 1
+        if mini_left < 1:
+            mini_left = random.randint(min_mini, max_mini)
+            soundplay(mini)
+            os.system('cls')
 
             # Display the list of mini tics
             cprint("\nMini tics!", "green", attrs=['underline'])
             print("\n", random.choice(mini_tics), "\n", random.choice(mini_tics))
             time.sleep(20)
             
-            os.system('cls')                                    # Clear the screen
-            print(day_text)                                     # Print what kind of day has been picked
+            os.system('cls')
+            print(day_text)
 
     # Get the user's attention
-    os.system('cls')    # Clear the screen
-    soundplay(announce) # Play a sound
+    os.system('cls')
+    soundplay(announce)
 
     while time_left > 0:
         cprint("                    TIC INCOMING!                    ", "black", "on_red")
         time.sleep(1)
         time_left -= 1
         
-    os.system('cls')    # Clear the screen
+    os.system('cls')
     burst_amount = random.randint(min_burst, max_burst)
-    while current_tic < burst_amount:     # While loop that outputs the tic(s)
+    current_tic = 0
+    while current_tic < burst_amount:
         print("\n")
         
-        # Choose a random tic and output it
-        tic_type = random.choices(
-            population=[1, 2, 3],
-            weights=[vocal_probability, physical_probability, faint_probability],   # Use the set probabilites
-            k=1)[0]
+        tic_type = random.choices(population=[1, 2, 3], weights=[vocal_probability, physical_probability, faint_probability], k=1)[0]
         
         if tic_type == 1:
             tic = colored(random.choice(vocal_tics), "green", attrs=["bold"])
@@ -170,26 +157,26 @@ while True:
             tic = colored(random.choice(physical_tics), "cyan", attrs=["bold"])
         elif tic_type == 3:
             tic = colored("Oh no! You feel dizzy and FAINT within the time limit!", "black", "on_red")
-            current_tic = burst_amount - 1  # End the sequence if a faint happens
+            current_tic = burst_amount - 1  # To end the sequence if a faint happens
 
-        print(tic)  # Print the tic
+        print(tic)
 
         # Setup the progress bar
         if tic_type == 3:
-            toolbar_width = random.randint(60, 117)  # If it's a faint, make the wait time 1-2 minutes
+            toolbar_width = random.randint(60, 117)
         else:
-            toolbar_width = random.randint(min_burst_time, max_burst_time)  # Otherwise, use the set variables
+            toolbar_width = random.randint(min_burst_time, max_burst_time)
         
         sys.stdout.write("[%s]" % (" " * toolbar_width))
         sys.stdout.flush()
-        sys.stdout.write("\b" * (toolbar_width+1)) # Return to start of line, after '['
+        sys.stdout.write("\b" * (toolbar_width+1))
         
         for i in range(toolbar_width):
             time.sleep(1)
             sys.stdout.write(">")
             sys.stdout.flush()
 
-        current_tic += 1   # Count up the burst amount
+        current_tic += 1
 
         # Reset sequence
         if current_tic == burst_amount:
