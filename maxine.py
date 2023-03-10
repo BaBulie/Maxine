@@ -9,18 +9,22 @@ import random
 
 cursor.hide()
 
-if os.path.isfile('announce.wav') and os.path.isfile('tic.wav'):
-    announce = "announce.wav"
-    mini = "tic.wav"
-else:
-    input('> Sound file(s) not found!')
-    os.exit()
+if os.path.isfile('announce.wav') == False:
+    cprint("[Errno 2] No such file or directory: 'announce.wav'\n", "red")
+
+if os.path.isfile('tic.wav') == False:
+    cprint("[Errno 2] No such file or directory: 'tic.wav'\n", "red")
+
+if (os.path.isfile('announce.wav') and os.path.isfile('tic.wav')) == False:
+    sound_choice = input("> Would you like to continue without the listed sound(s)? Y/N: ").upper()
+    if sound_choice != "Y":
+        sys.exit()
 
 try:
     file_mini = open('mini_tics.txt', 'r')
     f_mini = file_mini.readlines()
 except FileNotFoundError as e:
-    print(f'{e}')
+    cprint(f'{e}', "red")
     with open('mini_tics.txt', 'a+') as file_mini:
         file_mini.write("Mini tic")
         time.sleep(1)
@@ -32,7 +36,7 @@ try:
     file_vocal = open('vocal_tics.txt', 'r')
     f_vocal = file_vocal.readlines()
 except FileNotFoundError as e:
-    print(f'{e}')
+    cprint(f'{e}', "red")
     with open('vocal_tics.txt', 'a+') as file_vocal:
         file_vocal.write("Vocal tic")
         time.sleep(1)
@@ -44,7 +48,7 @@ try:
     file_physical = open('physical_tics.txt', 'r')
     f_physical = file_physical.readlines()
 except FileNotFoundError as e:
-    print(f'{e}')
+    cprint(f'{e}', "red")
     with open('physical_tics.txt', 'a+') as file_physical:
         file_physical.write("Physical tic")
         time.sleep(1)
@@ -104,8 +108,8 @@ elif day_type == 3:
     min_time = 1800 # 30 minutes
     max_time = 3000 # 50 minutes
 
-min_mini = min_time / 2
-max_mini = max_time / 2
+min_mini = min_time / 3
+max_mini = max_time / 3
 
 # Minimum and maximum burst amount per day type
 if day_type == 1:
@@ -153,7 +157,8 @@ while True:
         mini_left -= 1
         if mini_left < 1:
             mini_left = random.randint(min_mini, max_mini)
-            soundplay(mini)
+            if os.path.isfile('tic.wav'):
+                soundplay("tic.wav")
             os.system('cls')
 
             # Display the list of mini tics
@@ -166,7 +171,8 @@ while True:
 
     # Get the user's attention
     os.system('cls')
-    soundplay(announce)
+    if os.path.isfile('announce.wav'):
+        soundplay("announce.wav")
 
     while time_left > 0:
         cprint("                    TIC INCOMING!                    ", "black", "on_red")
