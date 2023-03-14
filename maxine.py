@@ -71,9 +71,9 @@ def import_tics():
 
 
 def get_probabilities():
-    good_day_probability = 5
-    medium_day_probability = 3
-    bad_day_probability = 1
+    good_day_probability = 6
+    medium_day_probability = 4
+    bad_day_probability = 2
     total_day_probability = good_day_probability + medium_day_probability + bad_day_probability # Helper variable for calculating %
 
     vocal_probability = 20
@@ -177,11 +177,22 @@ def main():
                 os.system('cls')
 
                 # Display the list of mini tics
-                cprint("\nMini tics!", "green", attrs=['underline'])
-                print("\n", random.choice(mini_tics), "\n", random.choice(mini_tics))
-                time.sleep(20)
+                cprint("\nMini tics!\n", "green", attrs=['underline'])
+                current_mini = 0
+                while current_mini < random.randint(1,3):
+                    print(random.choice(mini_tics))
+                    current_mini += 1
+                
+                print("")
+                reset_time = 20
+                while reset_time > 0:
+                    print("Continuing in: ", reset_time, " ", end='\r')
+                    reset_time -= 1
+                    time.sleep(1)
                 
                 os.system('cls')
+                print_probabilities(day_choice, good_day_probability, medium_day_probability, bad_day_probability, total_day_probability, 
+                        vocal_probability, physical_probability, faint_probability, total_tic_probability)
                 print(day_text)
 
         # Get the user's attention
